@@ -22,6 +22,8 @@ services:
 
   mock-api:
     build: ./mock_api
+    volumes:
+      - ./mock_api:/app # Mounted to make changes effectevly just by restarting container
     container_name: mock-api
     environment:
       API_KEY: ${API_KEY:?API_KEY must be set}
@@ -42,6 +44,8 @@ services:
     build: ./airflow
     # image: airflow-local # Compose will always build the image inside ./airflow - if image: airflow-local docker tries to pull it from docker hub.
     container_name: airflow
+    env_file:
+      - .env
     working_dir: /workspace
     environment:
       AIRFLOW__CORE__LOAD_EXAMPLES: "false"

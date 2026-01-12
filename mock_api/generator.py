@@ -20,7 +20,10 @@ MED_W=[0.5,0.18,0.1,0.12,0.06,0.04]
 DEVICES=["desktop","mobile","tablet"]
 DEV_W=[0.55,0.4,0.05]
 
-TZ = timezone.utc # Same as GMT+0 Lisbon
+TZ = timezone.utc # Same as Lisbon in winter time
+# Use for solution below for dynamic time
+#dt = datetime.now(ZoneInfo("Europe/Lisbon"))
+#print(dt)
 
 
 # All calls to random functions produce the same sequence of “random” values every run
@@ -54,7 +57,8 @@ class DataStore:
             churn=random.random()<0.18 # 18% chance that the customer has churned (stopped using the service). True or False
             self.customers.append({
                 "customer_id":cid,
-                "company_name":f"Company {i:04d}",
+                #"company_name":f"Company {i:04d}",
+                "company_name": f"Company {cid[:8]}", # Random every time, makes more sense because id is unique everytime.
                 "country":ctry,
                 "industry":ind,
                 "company_size":size,
