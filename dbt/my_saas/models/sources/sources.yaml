@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: raw_saas
+    database: elt_db
+    schema: raw
+    tables:
+      - name: customers
+      - name: payments
+      - name: sessions

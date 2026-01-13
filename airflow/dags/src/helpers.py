@@ -96,14 +96,8 @@ def extract_and_ingest_table(table, endpoint, ts_field, wm_name):
         with conn.cursor() as cur:
 
             for page in fetch_paged(endpoint, {"updated_since": updated_since_param}): # final dictionary to be sent as query string to request get {"updated_since": watermark,"page": 1,"page_size": 500}
-         
+
                 data = page.get("data") or []
-
-                data = [
-                    d for d in data
-                    if parser.isoparse(d.get(ts_field)) > max_seen
-                ] #Check if updated_at > max_seen to not reprocess Extra Layer of protection THE ULTIMATE GATEKEEPER
-
                 if not data: # True if [], None, "" or 0
                     continue
                 
@@ -113,6 +107,7 @@ def extract_and_ingest_table(table, endpoint, ts_field, wm_name):
                         parser.isoparse(d.get("last_seen_at") or datetime.now(timezone.utc).isoformat())
                     ) # update last_seen_at for each record in the response/page, adding it to the data (dictionary)
 
+                
                 try:    
                     if table == "raw.customers":
                         cur.executemany(

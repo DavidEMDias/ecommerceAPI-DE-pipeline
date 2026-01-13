@@ -105,6 +105,25 @@ services:
         condition: service_healthy
       mock-api:
         condition: service_healthy
+  
+
+  dbt:
+    image: ghcr.io/dbt-labs/dbt-postgres:1.8.latest
+    container_name: dbt_ecommerce
+    working_dir: /usr/app
+    environment:
+      DBT_PROFILES_DIR: /root/.dbt
+      TZ: ${TZ:-UTC}
+      POSTGRES_USER: ${ELT_DATABASE_USERNAME} # use as ENV variables in profiles.yml
+      POSTGRES_PASSWORD: ${ELT_DATABASE_PASSWORD}
+      POSTGRES_DB: ${ELT_DATABASE_NAME}
+    volumes:
+      - ./dbt/my_saas:/usr/app # needs to be mapped to my project for dbt_project to be found
+      - ./dbt/profiles:/root/.dbt
+    depends_on:
+      postgres:
+        condition: service_healthy
+    #entrypoint: ["/bin/bash", "-lc", "dbt deps && dbt run && tail -f /dev/null"]
 
 volumes:
   pgdata: {}
